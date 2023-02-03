@@ -84,7 +84,7 @@ const deleteBook = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
-const put = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const patch = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const book = yield books_1.default.updateBook(req.params.id, req.body);
         if (book) {
@@ -107,4 +107,4 @@ const put = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         next(error);
     }
 });
-exports.default = { get, getOne, post, deleteBook, put };
+exports.default = { get, getOne, post, deleteBook, patch };

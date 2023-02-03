@@ -71,7 +71,7 @@ const deleteBook: RequestHandler<{ id: string }> = async (req, res, next) => {
 	}
 };
 
-const put: RequestHandler<{ id: string }>= async (req, res, next) => {
+const patch: RequestHandler<{ id: string }>= async (req, res, next) => {
 	try {
 		const book = await service.updateBook(req.params.id, req.body);
 		if (book) {
@@ -95,4 +95,4 @@ const put: RequestHandler<{ id: string }>= async (req, res, next) => {
 
 
 
-export default { get, getOne, post, deleteBook, put };
+export default { get, getOne, post, deleteBook, patch };
