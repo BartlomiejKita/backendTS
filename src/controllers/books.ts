@@ -3,8 +3,11 @@ import { RequestHandler } from "express";
 import service from "../service/books";
 
 const get: RequestHandler = async (req, res, next) => {
+	const page: number = (req.query.page as unknown as number) || 1;
+	const limit: number = (req.query.limit as unknown as number) || 20;
+	Number(page);
 	try {
-		const books = await service.getAllBooks();
+		const books = await service.getAllBooks(page, limit);
 		res.json({
 			status: "success",
 			code: 200,
@@ -38,6 +41,15 @@ const getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
 
 const post: RequestHandler = async (req, res, next) => {
 	try {
+		const book = await service.findBookByTitle(req.body.title);
+		if (book) {
+			return res.status(409).json({
+				status: "conflict",
+				code: 409,
+				message: "Book with this title already exists",
+			});
+		}
+
 		const newBook = await service.createBook(req.body);
 		res.json({
 			status: "success",
@@ -71,7 +83,7 @@ const deleteBook: RequestHandler<{ id: string }> = async (req, res, next) => {
 	}
 };
 
-const patch: RequestHandler<{ id: string }>= async (req, res, next) => {
+const patch: RequestHandler<{ id: string }> = async (req, res, next) => {
 	try {
 		const book = await service.updateBook(req.params.id, req.body);
 		if (book) {
@@ -92,7 +104,5 @@ const patch: RequestHandler<{ id: string }>= async (req, res, next) => {
 		next(error);
 	}
 };
-
-
 
 export default { get, getOne, post, deleteBook, patch };

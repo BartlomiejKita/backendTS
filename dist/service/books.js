@@ -11,7 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const book_1 = require("./schemas/book");
 const { Types: { ObjectId }, } = require("mongoose");
-const getAllBooks = () => __awaiter(void 0, void 0, void 0, function* () { return book_1.Book.find({}).lean(); });
+const findBookByTitle = (title) => __awaiter(void 0, void 0, void 0, function* () { return yield book_1.Book.findOne({ title }); });
+const getAllBooks = (page, limit) => __awaiter(void 0, void 0, void 0, function* () {
+    return book_1.Book.find({})
+        .lean()
+        .limit(limit * 1)
+        .skip((page - 1) * limit);
+});
+;
 const getOneBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     let objectIdBookId;
     try {
@@ -49,4 +56,11 @@ const updateBook = (bookId, body) => __awaiter(void 0, void 0, void 0, function*
         strict: "throw",
     });
 });
-exports.default = { getAllBooks, getOneBook, createBook, deleteBook, updateBook };
+exports.default = {
+    findBookByTitle,
+    getAllBooks,
+    getOneBook,
+    createBook,
+    deleteBook,
+    updateBook,
+};

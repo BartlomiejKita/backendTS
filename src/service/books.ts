@@ -4,7 +4,13 @@ const {
 	Types: { ObjectId },
 } = require("mongoose");
 
-const getAllBooks = async () => Book.find({}).lean();
+const findBookByTitle = async (title: string) => await Book.findOne({ title });
+
+const getAllBooks = async (page: number, limit: number) =>
+	Book.find({})
+		.lean()
+		.limit(limit * 1)
+		.skip((page - 1) * limit);;
 
 const getOneBook = async (bookId: string) => {
 	let objectIdBookId;
@@ -48,4 +54,11 @@ const updateBook = async (bookId: string, body: object) => {
 	);
 };
 
-export default { getAllBooks, getOneBook, createBook, deleteBook, updateBook };
+export default {
+	findBookByTitle,
+	getAllBooks,
+	getOneBook,
+	createBook,
+	deleteBook,
+	updateBook,
+};

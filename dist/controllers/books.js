@@ -14,8 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const books_1 = __importDefault(require("../service/books"));
 const get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 20;
+    Number(page);
     try {
-        const books = yield books_1.default.getAllBooks();
+        const books = yield books_1.default.getAllBooks(page, limit);
         res.json({
             status: "success",
             code: 200,
@@ -50,6 +53,14 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 });
 const post = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const book = yield books_1.default.findBookByTitle(req.body.title);
+        if (book) {
+            return res.status(409).json({
+                status: "conflict",
+                code: 409,
+                message: "Book with this title already exists",
+            });
+        }
         const newBook = yield books_1.default.createBook(req.body);
         res.json({
             status: "success",
