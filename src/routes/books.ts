@@ -1,7 +1,6 @@
 import { Router } from "express";
-import validation from "../middlewares/booksValidation";
-
 const router = Router();
+import validation from "../middlewares/booksValidation";
 import bookController from "../controllers/books";
 
 router.get("/", bookController.get);

@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export interface IBook {
 	isbn: string;
@@ -9,7 +9,7 @@ export interface IBook {
 	description: string;
 }
 
-const bookSchema = new Schema<IBook>(
+const bookSchema: Schema = new Schema(
 	{
 		isbn: {
 			type: String,
@@ -29,9 +29,8 @@ const bookSchema = new Schema<IBook>(
 			maxlength: 120,
 		},
 		author: {
-			type: String,
-			minlength: 1,
-			maxlength: 90,
+			type: Schema.Types.ObjectId,
+			ref: "authors",
 		},
 		pages: {
 			type: Number,

@@ -1,5 +1,4 @@
 import { Book } from "./schemas/book";
-
 const {
 	Types: { ObjectId },
 } = require("mongoose");
@@ -10,7 +9,7 @@ const getAllBooks = async (page: number, limit: number) =>
 	Book.find({})
 		.lean()
 		.limit(limit * 1)
-		.skip((page - 1) * limit);;
+		.skip((page - 1) * limit);
 
 const getOneBook = async (bookId: string) => {
 	let objectIdBookId;

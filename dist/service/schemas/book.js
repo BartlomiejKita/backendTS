@@ -21,9 +21,8 @@ const bookSchema = new mongoose_1.Schema({
         maxlength: 120,
     },
     author: {
-        type: String,
-        minlength: 1,
-        maxlength: 90,
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "authors",
     },
     pages: {
         type: Number,

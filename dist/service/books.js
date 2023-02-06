@@ -18,7 +18,6 @@ const getAllBooks = (page, limit) => __awaiter(void 0, void 0, void 0, function*
         .limit(limit * 1)
         .skip((page - 1) * limit);
 });
-;
 const getOneBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     let objectIdBookId;
     try {
