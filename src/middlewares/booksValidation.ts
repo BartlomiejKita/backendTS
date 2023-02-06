@@ -5,7 +5,7 @@ const schemaCreateBook = Joi.object({
 	isbn: Joi.string().min(10).max(13).required(),
 	title: Joi.string().min(1).max(120).required(),
 	subtitle: Joi.string().min(1).max(120).optional(),
-	author: Joi.string().min(1).max(120).required(),
+	authors: Joi.string().min(1).max(120).required(),
 	pages: Joi.number().min(1).max(2000).required(),
 	description: Joi.string().min(1).max(500),
 });
@@ -14,7 +14,7 @@ const schemaUpdateBook = Joi.object({
 	isbn: Joi.string().min(10).max(13).optional(),
 	title: Joi.string().min(1).max(120).optional(),
 	subtitle: Joi.string().min(1).max(120).optional(),
-	author: Joi.string().min(1).max(120).optional(),
+	authors: Joi.string().min(1).max(120).optional(),
 	pages: Joi.number().min(1).max(2000).optional(),
 	description: Joi.string().min(1).max(500).optional(),
 });
@@ -45,4 +45,4 @@ const updateBook = (req: Request, res: Response, next: NextFunction) => {
 	return validation(schemaUpdateBook, req.body, next, res);
 };
 
-export default {createBook, updateBook}
+export default { createBook, updateBook };

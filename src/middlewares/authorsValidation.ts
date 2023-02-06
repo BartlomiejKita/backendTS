@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 const schemaCreateAuthor = Joi.object({
 	name: Joi.string().min(1).max(30).required(),
-	books: Joi.string().min(1).max(30).required(),
+	books: Joi.string().min(1).max(30).optional(),
 });
 
 const schemaUpdateAuthor = Joi.object({

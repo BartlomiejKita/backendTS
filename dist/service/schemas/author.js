@@ -9,9 +9,11 @@ const authorSchema = new mongoose_1.Schema({
         minlength: 1,
         maxlength: 30,
     },
-    books: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "books",
-    },
+    books: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "Book",
+        },
+    ],
 }, { versionKey: false, timestamps: true });
-exports.Author = (0, mongoose_1.model)("author", authorSchema);
+exports.Author = (0, mongoose_1.model)("Author", authorSchema);

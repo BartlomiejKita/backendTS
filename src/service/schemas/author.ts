@@ -13,12 +13,14 @@ const authorSchema = new Schema(
 			minlength: 1,
 			maxlength: 30,
 		},
-		books: {
-			type: Schema.Types.ObjectId,
-			ref: "books",
-		},
+		books: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "Book",
+			},
+		],
 	},
 	{ versionKey: false, timestamps: true }
 );
 
-export const Author = model<IAuthor>("author", authorSchema);
+export const Author = model<IAuthor>("Author", authorSchema);

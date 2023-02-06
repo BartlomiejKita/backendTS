@@ -20,10 +20,12 @@ const bookSchema = new mongoose_1.Schema({
         minlength: 1,
         maxlength: 120,
     },
-    author: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "authors",
-    },
+    authors: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "Author",
+        },
+    ],
     pages: {
         type: Number,
         min: 1,
@@ -35,4 +37,4 @@ const bookSchema = new mongoose_1.Schema({
         maxlength: 500,
     },
 }, { versionKey: false, timestamps: true });
-exports.Book = (0, mongoose_1.model)("book", bookSchema);
+exports.Book = (0, mongoose_1.model)("Book", bookSchema);

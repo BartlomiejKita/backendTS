@@ -4,7 +4,7 @@ export interface IBook {
 	isbn: string;
 	title: string;
 	subtitle?: string;
-	author: string;
+	authors: string;
 	pages: number;
 	description: string;
 }
@@ -28,10 +28,12 @@ const bookSchema: Schema = new Schema(
 			minlength: 1,
 			maxlength: 120,
 		},
-		author: {
-			type: Schema.Types.ObjectId,
-			ref: "authors",
-		},
+		authors: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "Author",
+			},
+		],
 		pages: {
 			type: Number,
 			min: 1,
@@ -46,4 +48,4 @@ const bookSchema: Schema = new Schema(
 	{ versionKey: false, timestamps: true }
 );
 
-export const Book = model<IBook>("book", bookSchema);
+export const Book = model<IBook>("Book", bookSchema);

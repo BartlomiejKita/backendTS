@@ -8,7 +8,7 @@ const schemaCreateBook = joi_1.default.object({
     isbn: joi_1.default.string().min(10).max(13).required(),
     title: joi_1.default.string().min(1).max(120).required(),
     subtitle: joi_1.default.string().min(1).max(120).optional(),
-    author: joi_1.default.string().min(1).max(120).required(),
+    authors: joi_1.default.string().min(1).max(120).required(),
     pages: joi_1.default.number().min(1).max(2000).required(),
     description: joi_1.default.string().min(1).max(500),
 });
@@ -16,7 +16,7 @@ const schemaUpdateBook = joi_1.default.object({
     isbn: joi_1.default.string().min(10).max(13).optional(),
     title: joi_1.default.string().min(1).max(120).optional(),
     subtitle: joi_1.default.string().min(1).max(120).optional(),
-    author: joi_1.default.string().min(1).max(120).optional(),
+    authors: joi_1.default.string().min(1).max(120).optional(),
     pages: joi_1.default.number().min(1).max(2000).optional(),
     description: joi_1.default.string().min(1).max(500).optional(),
 });
