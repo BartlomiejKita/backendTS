@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 import app from "./app";
 import { config } from "./config/config";
 
-
-
 mongoose.set("strictQuery", false);
-const connection = mongoose.connect(config.mongo.url);
+const connection = mongoose.connect(config.mongo.url, {
+	retryWrites: true,
+	w: "majority",
+});
 connection
 	.then(() => {
 		app.listen(config.server.port, () => {
