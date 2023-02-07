@@ -2,9 +2,9 @@ import { RequestHandler } from "express";
 
 import service from "../service/authors";
 
-const get: RequestHandler = async (req, res, next) => {
-	const page: number = (req.query.page as unknown as number) || 1;
-	const limit: number = (req.query.limit as unknown as number) || 20;
+const get: RequestHandler = async (req: any, res, next) => {
+	const page: number = parseInt(req.query?.page || 1);
+	const limit: number = parseInt(req.query?.limit || 20);
 	Number(page);
 	try {
 		const authors = await service.getAllAuthors(page, limit);
