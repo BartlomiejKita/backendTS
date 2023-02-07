@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const books_1 = __importDefault(require("../service/books"));
 const get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 20;
-    Number(page);
+    var _a, _b;
+    const page = parseInt(((_a = req.query) === null || _a === void 0 ? void 0 : _a.page) || 1);
+    const limit = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) || 20);
     try {
         const books = yield books_1.default.getAllBooks(page, limit);
         res.json({

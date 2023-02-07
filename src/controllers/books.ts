@@ -2,10 +2,13 @@ import { RequestHandler } from "express";
 
 import service from "../service/books";
 
-const get: RequestHandler = async (req, res, next) => {
-	const page: number = (req.query.page as unknown as number) || 1;
-	const limit: number = (req.query.limit as unknown as number) || 20;
-	Number(page);
+const get: RequestHandler<{ page: number; limit: number }> = async (
+	req: any,
+	res,
+	next
+) => {
+	const page = parseInt(req.query?.page || 1);
+	const limit = parseInt(req.query?.limit || 20);
 	try {
 		const books = await service.getAllBooks(page, limit);
 		res.json({
