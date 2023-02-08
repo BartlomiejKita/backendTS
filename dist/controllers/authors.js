@@ -11,12 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const authors_1 = __importDefault(require("../service/authors"));
-const get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const page = parseInt(((_a = req.query) === null || _a === void 0 ? void 0 : _a.page) || 1);
-    const limit = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) || 20);
+class AuthorsController {
+}
+_a = AuthorsController;
+AuthorsController.get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b, _c;
+    const page = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.page) || 1);
+    const limit = parseInt(((_c = req.query) === null || _c === void 0 ? void 0 : _c.limit) || 20);
     try {
         const authors = yield authors_1.default.getAllAuthors(page, limit);
         res.json({
@@ -29,7 +33,7 @@ const get = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         next(error);
     }
 });
-const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+AuthorsController.getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const author = yield authors_1.default.getOneAuthor(req.params.id);
         if (author) {
@@ -51,7 +55,7 @@ const getOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         next(error);
     }
 });
-const post = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+AuthorsController.post = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const author = yield authors_1.default.findAuthorByName(req.body.name);
         if (author) {
@@ -73,7 +77,7 @@ const post = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         next(error);
     }
 });
-const deleteAuthor = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+AuthorsController.deleteAuthor = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const author = yield authors_1.default.deleteAuthor(req.params.id);
         if (author) {
@@ -95,7 +99,7 @@ const deleteAuthor = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         next(error);
     }
 });
-const patch = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+AuthorsController.patch = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const author = yield authors_1.default.updateAuthor(req.params.id, req.body);
         if (author) {
@@ -118,4 +122,4 @@ const patch = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         next(error);
     }
 });
-exports.default = { get, getOne, post, deleteAuthor, patch };
+exports.default = AuthorsController;

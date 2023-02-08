@@ -15,18 +15,7 @@ app.use((req, res) => {
 	res.status(404).json({
 		status: "error",
 		code: 404,
-		message: `Use api on routes: 
-	/api/books with get to get Books
-	/api/books/:id with get to get one Book
-	/api/books with post to add Book
-    /api/books/:id with patch to update Book
-	/api/books/:id with delete to delete Book
-	/api/authors with get to get Authors
-	/api/authors/:id with get to get one Author
-	/api/authors with post to add Author
-    /api/authors/:id with patch to update Author
-	/api/authors/:id with delete to delete Author
-`,
+		message: `Use correct api's routes`,
 		data: "Not found",
 	});
 });
