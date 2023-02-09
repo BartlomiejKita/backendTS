@@ -18,8 +18,7 @@ const getAllBooks = (page, limit) => __awaiter(void 0, void 0, void 0, function*
     return book_1.Book.find({})
         .lean()
         .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .populate("authors");
+        .skip((page - 1) * limit);
 });
 const getOneBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     let objectIdBookId;
@@ -29,7 +28,7 @@ const getOneBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         return null;
     }
-    return book_1.Book.findOne({ _id: objectIdBookId }).lean().populate("authors");
+    return book_1.Book.findOne({ _id: objectIdBookId }).lean();
 });
 const createBook = (body) => __awaiter(void 0, void 0, void 0, function* () { return yield book_1.Book.create(body); });
 const deleteBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
 export interface IBook {
 	isbn: string;
@@ -9,7 +9,7 @@ export interface IBook {
 	description: string;
 }
 
-const bookSchema: Schema = new Schema(
+const bookSchema = new Schema(
 	{
 		isbn: {
 			type: String,
@@ -48,4 +48,4 @@ const bookSchema: Schema = new Schema(
 	{ versionKey: false, timestamps: true }
 );
 
-export const Book = model<IBook>("Book", bookSchema);
+export const Book = model<IBook & Document>("Book", bookSchema);

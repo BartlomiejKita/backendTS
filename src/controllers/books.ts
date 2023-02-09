@@ -1,10 +1,27 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Router } from "express";
+import Controller from "../interfaces/controller.interface";
+import { Book, IBook } from "../service/schemas/book";
 
 import service from "../service/books";
 
-class BooksController {
-   
-	static get: RequestHandler<{ page: number; limit: number }> = async (
+class BooksController implements Controller {
+	public path = "/books";
+	public router = Router();
+	private book = Book;
+
+	constructor() {
+		this.initializeRoutes();
+	}
+
+	private initializeRoutes() {
+		this.router.get(this.path, this.get);
+		this.router.get(`${this.path}/:id`, this.getOne);
+		this.router.patch(`${this.path}/:id`, this.patch);
+		this.router.delete(`${this.path}/:id`, this.deleteBook);
+		this.router.post(this.path, this.post);
+	}
+
+	private get: RequestHandler<{ page: number; limit: number }> = async (
 		req: any,
 		res,
 		next
@@ -23,7 +40,7 @@ class BooksController {
 		}
 	};
 
-	static getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
+	private getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
 		try {
 			const book = await service.getOneBook(req.params.id);
 			if (book) {
@@ -44,7 +61,7 @@ class BooksController {
 		}
 	};
 
-	static post: RequestHandler = async (req, res, next) => {
+	private post: RequestHandler = async (req, res, next) => {
 		try {
 			const book = await service.findBookByTitle(req.body.title);
 			if (book) {
@@ -67,7 +84,11 @@ class BooksController {
 		}
 	};
 
-	static deleteBook: RequestHandler<{ id: string }> = async (req, res, next) => {
+	private deleteBook: RequestHandler<{ id: string }> = async (
+		req,
+		res,
+		next
+	) => {
 		try {
 			const book = await service.deleteBook(req.params.id);
 			if (book) {
@@ -88,7 +109,7 @@ class BooksController {
 		}
 	};
 
-	static patch: RequestHandler<{ id: string }> = async (req, res, next) => {
+	private patch: RequestHandler<{ id: string }> = async (req, res, next) => {
 		try {
 			const book = await service.updateBook(req.params.id, req.body);
 			if (book) {

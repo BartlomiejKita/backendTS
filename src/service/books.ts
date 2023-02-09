@@ -11,8 +11,7 @@ const getAllBooks = async (page: number, limit: number) =>
 	Book.find({})
 		.lean()
 		.limit(limit * 1)
-		.skip((page - 1) * limit)
-		.populate("authors");
+		.skip((page - 1) * limit);
 
 const getOneBook = async (bookId: string) => {
 	let objectIdBookId;
@@ -21,7 +20,7 @@ const getOneBook = async (bookId: string) => {
 	} catch (error) {
 		return null;
 	}
-	return Book.findOne({ _id: objectIdBookId }).lean().populate("authors");
+	return Book.findOne({ _id: objectIdBookId }).lean();
 };
 
 const createBook = async (body: object) => await Book.create(body);
