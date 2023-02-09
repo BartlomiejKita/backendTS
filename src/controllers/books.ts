@@ -1,13 +1,11 @@
 import { RequestHandler, Router } from "express";
 import Controller from "../interfaces/controller.interface";
-import { Book, IBook } from "../service/schemas/book";
 
 import service from "../service/books";
 
 class BooksController implements Controller {
 	public path = "/books";
 	public router = Router();
-	private book = Book;
 
 	constructor() {
 		this.initializeRoutes();
