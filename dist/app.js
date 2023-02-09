@@ -18,6 +18,22 @@ class App {
         this.app.listen(config_1.config.server.port, () => {
             console.log(`App listening on the port ${config_1.config.server.port}`);
         });
+        this.app.use((req, res) => {
+            res.status(404).json({
+                status: "error",
+                code: 404,
+                message: `Use correct api's routes`,
+                data: "Not found",
+            });
+        });
+        this.app.use((err, req, res, next) => {
+            res.status(500).json({
+                status: "fail",
+                code: 500,
+                message: err.message,
+                data: "Internal Server Error",
+            });
+        });
     }
     initializeMiddlewares() {
         this.app.use(express_1.default.json());
