@@ -2,6 +2,7 @@ import { RequestHandler, Router } from "express";
 import Controller from "../interfaces/controller.interface";
 
 import service from "../service/books";
+import validate from "../middlewares/booksValidation";
 
 class BooksController implements Controller {
 	public path = "/books";
@@ -14,9 +15,9 @@ class BooksController implements Controller {
 	private initializeRoutes() {
 		this.router.get(this.path, this.get);
 		this.router.get(`${this.path}/:id`, this.getOne);
-		this.router.patch(`${this.path}/:id`, this.patch);
+		this.router.patch(`${this.path}/:id`, validate.updateBook, this.patch);
 		this.router.delete(`${this.path}/:id`, this.deleteBook);
-		this.router.post(this.path, this.post);
+		this.router.post(this.path, validate.createBook, this.post);
 	}
 
 	private get: RequestHandler<{ page: number; limit: number }> = async (

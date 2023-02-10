@@ -1,9 +1,24 @@
-import { RequestHandler } from "express";
-
+import { RequestHandler, Router } from "express";
+import Controller from "../interfaces/controller.interface";
 import service from "../service/authors";
+import validate from "../middlewares/authorsValidation";
+class AuthorsController implements Controller {
+	public path = "/authors";
+	public router = Router();
 
-class AuthorsController {
-	static get: RequestHandler<{ page: number; limit: number }> = async (
+	constructor() {
+		this.initializeRoutes();
+	}
+
+	private initializeRoutes() {
+		this.router.get(this.path, this.get);
+		this.router.get(`${this.path}/:id`, this.getOne);
+		this.router.patch(`${this.path}/:id`, validate.updateAuthor, this.patch);
+		this.router.delete(`${this.path}/:id`, this.deleteAuthor);
+		this.router.post(this.path, validate.createAuthor, this.post);
+	}
+
+	private get: RequestHandler<{ page: number; limit: number }> = async (
 		req: any,
 		res,
 		next
@@ -22,7 +37,7 @@ class AuthorsController {
 		}
 	};
 
-	static getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
+	private getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
 		try {
 			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
@@ -43,7 +58,7 @@ class AuthorsController {
 		}
 	};
 
-	static post: RequestHandler = async (req, res, next) => {
+	private post: RequestHandler = async (req, res, next) => {
 		try {
 			const author = await service.findAuthorByName(req.body.name);
 			if (author) {
@@ -66,7 +81,7 @@ class AuthorsController {
 		}
 	};
 
-	static deleteAuthor: RequestHandler<{ id: string }> = async (
+	private deleteAuthor: RequestHandler<{ id: string }> = async (
 		req,
 		res,
 		next
@@ -91,7 +106,7 @@ class AuthorsController {
 		}
 	};
 
-	static patch: RequestHandler<{ id: string }> = async (req, res, next) => {
+	private patch: RequestHandler<{ id: string }> = async (req, res, next) => {
 		try {
 			const author = await service.updateAuthor(req.params.id, req.body);
 			if (author) {

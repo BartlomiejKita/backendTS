@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const books_1 = __importDefault(require("../service/books"));
+const booksValidation_1 = __importDefault(require("../middlewares/booksValidation"));
 class BooksController {
     constructor() {
         this.path = "/books";
@@ -128,9 +129,9 @@ class BooksController {
     initializeRoutes() {
         this.router.get(this.path, this.get);
         this.router.get(`${this.path}/:id`, this.getOne);
-        this.router.patch(`${this.path}/:id`, this.patch);
+        this.router.patch(`${this.path}/:id`, booksValidation_1.default.updateBook, this.patch);
         this.router.delete(`${this.path}/:id`, this.deleteBook);
-        this.router.post(this.path, this.post);
+        this.router.post(this.path, booksValidation_1.default.createBook, this.post);
     }
 }
 exports.default = BooksController;
