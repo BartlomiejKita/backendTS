@@ -2,6 +2,8 @@ import { RequestHandler, Router } from "express";
 import Controller from "../interfaces/controller.interface";
 import service from "../service/authors";
 import validate from "../middlewares/authorsValidation";
+import AuthorNotFoundException from "../exceptions/AuthorNotFoundException";
+
 class AuthorsController implements Controller {
 	public path = "/authors";
 	public router = Router();
@@ -47,11 +49,7 @@ class AuthorsController implements Controller {
 					data: author,
 				});
 			} else {
-				res.json({
-					status: "failure",
-					code: 404,
-					message: "Not found",
-				});
+				next(new AuthorNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);
@@ -95,11 +93,7 @@ class AuthorsController implements Controller {
 					message: "Author has been removed",
 				});
 			} else {
-				res.json({
-					status: "failure",
-					code: 404,
-					message: "Not found",
-				});
+				next(new AuthorNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);
@@ -117,11 +111,7 @@ class AuthorsController implements Controller {
 					data: author,
 				});
 			} else {
-				return res.status(404).json({
-					status: "failure",
-					code: 404,
-					message: "Not Found",
-				});
+				next(new AuthorNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);

@@ -7,37 +7,30 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config/config");
 const morgan_1 = __importDefault(require("morgan"));
+const error_1 = __importDefault(require("./middlewares/error"));
+const WrongRouteException_1 = __importDefault(require("./exceptions/WrongRouteException"));
 class App {
     constructor(controllers) {
         this.app = (0, express_1.default)();
         this.connectToTheDatabase();
         this.initializeMiddlewares();
         this.initializeControllers(controllers);
+        this.initializeErrorHandling();
     }
     listen() {
         this.app.listen(config_1.config.server.port, () => {
             console.log(`App listening on the port ${config_1.config.server.port}`);
         });
-        this.app.use((req, res) => {
-            res.status(404).json({
-                status: "error",
-                code: 404,
-                message: `Use correct api's routes`,
-                data: "Not found",
-            });
-        });
-        this.app.use((err, req, res, next) => {
-            res.status(500).json({
-                status: "fail",
-                code: 500,
-                message: err.message,
-                data: "Internal Server Error",
-            });
-        });
     }
     initializeMiddlewares() {
         this.app.use(express_1.default.json());
         this.app.use((0, morgan_1.default)("tiny"));
+    }
+    initializeErrorHandling() {
+        this.app.use((req, res, next) => {
+            next(new WrongRouteException_1.default());
+        });
+        this.app.use(error_1.default);
     }
     initializeControllers(controllers) {
         controllers.forEach((controller) => {

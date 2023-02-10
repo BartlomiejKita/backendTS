@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const books_1 = __importDefault(require("../service/books"));
 const booksValidation_1 = __importDefault(require("../middlewares/booksValidation"));
+const BookNotFoundException_1 = __importDefault(require("../exceptions/BookNotFoundException"));
 class BooksController {
     constructor() {
         this.path = "/books";
@@ -46,11 +47,7 @@ class BooksController {
                     });
                 }
                 else {
-                    res.json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not found",
-                    });
+                    next(new BookNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {
@@ -90,11 +87,7 @@ class BooksController {
                     });
                 }
                 else {
-                    res.json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not found",
-                    });
+                    next(new BookNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {
@@ -113,11 +106,7 @@ class BooksController {
                     });
                 }
                 else {
-                    return res.status(404).json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not Found",
-                    });
+                    next(new BookNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {

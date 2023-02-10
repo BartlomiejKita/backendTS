@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authors_1 = __importDefault(require("../service/authors"));
 const authorsValidation_1 = __importDefault(require("../middlewares/authorsValidation"));
+const AuthorNotFoundException_1 = __importDefault(require("../exceptions/AuthorNotFoundException"));
 class AuthorsController {
     constructor() {
         this.path = "/authors";
@@ -46,11 +47,7 @@ class AuthorsController {
                     });
                 }
                 else {
-                    res.json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not found",
-                    });
+                    next(new AuthorNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {
@@ -90,11 +87,7 @@ class AuthorsController {
                     });
                 }
                 else {
-                    res.json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not found",
-                    });
+                    next(new AuthorNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {
@@ -113,11 +106,7 @@ class AuthorsController {
                     });
                 }
                 else {
-                    return res.status(404).json({
-                        status: "failure",
-                        code: 404,
-                        message: "Not Found",
-                    });
+                    next(new AuthorNotFoundException_1.default(req.params.id));
                 }
             }
             catch (error) {

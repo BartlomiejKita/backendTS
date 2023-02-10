@@ -1,8 +1,8 @@
 import { RequestHandler, Router } from "express";
 import Controller from "../interfaces/controller.interface";
-
 import service from "../service/books";
 import validate from "../middlewares/booksValidation";
+import BookNotFoundException from "../exceptions/BookNotFoundException";
 
 class BooksController implements Controller {
 	public path = "/books";
@@ -49,11 +49,7 @@ class BooksController implements Controller {
 					data: book,
 				});
 			} else {
-				res.json({
-					status: "failure",
-					code: 404,
-					message: "Not found",
-				});
+				next(new BookNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);
@@ -97,11 +93,7 @@ class BooksController implements Controller {
 					message: "Book has been removed",
 				});
 			} else {
-				res.json({
-					status: "failure",
-					code: 404,
-					message: "Not found",
-				});
+				next(new BookNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);
@@ -119,11 +111,7 @@ class BooksController implements Controller {
 					data: book,
 				});
 			} else {
-				return res.status(404).json({
-					status: "failure",
-					code: 404,
-					message: "Not Found",
-				});
+				next(new BookNotFoundException(req.params.id));
 			}
 		} catch (error) {
 			next(error);
