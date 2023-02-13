@@ -1,18 +1,20 @@
-import { RequestHandler, Router } from "express";
+import { Response, Request, NextFunction, Router } from "express";
 import Controller from "../interfaces/controller.interface";
 import service from "../service/authors";
 import validate from "../middlewares/authorsValidation";
 import AuthorNotFoundException from "../exceptions/AuthorNotFoundException";
+import BaseController from "../base-classes/base-controller";
 
-class AuthorsController implements Controller {
+class AuthorsController extends BaseController {
 	public path = "/authors";
 	public router = Router();
 
 	constructor() {
+		super();
 		this.initializeRoutes();
 	}
 
-	private initializeRoutes() {
+	protected initializeRoutes() {
 		this.router.get(this.path, this.get);
 		this.router.get(`${this.path}/:id`, this.getOne);
 		this.router.patch(`${this.path}/:id`, validate.updateAuthor, this.patch);
@@ -20,11 +22,7 @@ class AuthorsController implements Controller {
 		this.router.post(this.path, validate.createAuthor, this.post);
 	}
 
-	private get: RequestHandler<{ page: number; limit: number }> = async (
-		req: any,
-		res,
-		next
-	) => {
+	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
 		const limit = parseInt(req.query?.limit || 20);
 		try {
@@ -37,9 +35,9 @@ class AuthorsController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
+	protected async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
@@ -54,13 +52,13 @@ class AuthorsController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private post: RequestHandler = async (req, res, next) => {
+	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.findAuthorByName(req.body.name);
 			if (author) {
-				return res.status(409).json({
+				res.status(409).json({
 					status: "conflict",
 					code: 409,
 					message: "Author with this name already exists",
@@ -77,13 +75,13 @@ class AuthorsController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private deleteAuthor: RequestHandler<{ id: string }> = async (
-		req,
-		res,
-		next
-	) => {
+	protected async deleteAuthor(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
 		try {
 			const author = await service.deleteAuthor(req.params.id);
 			if (author) {
@@ -98,13 +96,13 @@ class AuthorsController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private patch: RequestHandler<{ id: string }> = async (req, res, next) => {
+	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.updateAuthor(req.params.id, req.body);
 			if (author) {
-				return res.json({
+				res.json({
 					status: "success",
 					code: 200,
 					message: "Author has been updated",
@@ -116,7 +114,7 @@ class AuthorsController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 }
 
 export default AuthorsController;

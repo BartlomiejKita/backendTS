@@ -5,7 +5,7 @@ const schemaCreateBook = Joi.object({
 	isbn: Joi.string().min(10).max(13).required(),
 	title: Joi.string().min(1).max(120).required(),
 	subtitle: Joi.string().min(1).max(120).optional(),
-	authors: Joi.string().min(1).max(120).required(),
+	authors:  Joi.array().items(Joi.string()).required(),
 	pages: Joi.number().min(1).max(2000).required(),
 	description: Joi.string().min(1).max(500),
 });

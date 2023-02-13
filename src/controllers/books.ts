@@ -1,18 +1,20 @@
-import { RequestHandler, Router } from "express";
+import { Response, Request, NextFunction, Router } from "express";
 import Controller from "../interfaces/controller.interface";
 import service from "../service/books";
 import validate from "../middlewares/booksValidation";
 import BookNotFoundException from "../exceptions/BookNotFoundException";
+import BaseController from "../base-classes/base-controller";
 
-class BooksController implements Controller {
+class BooksController extends BaseController {
 	public path = "/books";
 	public router = Router();
 
 	constructor() {
+		super();
 		this.initializeRoutes();
 	}
 
-	private initializeRoutes() {
+	protected initializeRoutes() {
 		this.router.get(this.path, this.get);
 		this.router.get(`${this.path}/:id`, this.getOne);
 		this.router.patch(`${this.path}/:id`, validate.updateBook, this.patch);
@@ -20,11 +22,7 @@ class BooksController implements Controller {
 		this.router.post(this.path, validate.createBook, this.post);
 	}
 
-	private get: RequestHandler<{ page: number; limit: number }> = async (
-		req: any,
-		res,
-		next
-	) => {
+	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
 		const limit = parseInt(req.query?.limit || 20);
 		try {
@@ -37,9 +35,9 @@ class BooksController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private getOne: RequestHandler<{ id: string }> = async (req, res, next) => {
+	protected async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.getOneBook(req.params.id);
 			if (book) {
@@ -54,13 +52,13 @@ class BooksController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private post: RequestHandler = async (req, res, next) => {
+	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.findBookByTitle(req.body.title);
 			if (book) {
-				return res.status(409).json({
+				res.status(409).json({
 					status: "conflict",
 					code: 409,
 					message: "Book with this title already exists",
@@ -77,13 +75,9 @@ class BooksController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private deleteBook: RequestHandler<{ id: string }> = async (
-		req,
-		res,
-		next
-	) => {
+	protected async deleteBook(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.deleteBook(req.params.id);
 			if (book) {
@@ -98,13 +92,13 @@ class BooksController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 
-	private patch: RequestHandler<{ id: string }> = async (req, res, next) => {
+	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.updateBook(req.params.id, req.body);
 			if (book) {
-				return res.json({
+				res.json({
 					status: "success",
 					code: 200,
 					message: "Book has been updated",
@@ -116,7 +110,7 @@ class BooksController implements Controller {
 		} catch (error) {
 			next(error);
 		}
-	};
+	}
 }
 
 export default BooksController;

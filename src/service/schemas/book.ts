@@ -4,7 +4,7 @@ export interface IBook {
 	isbn: string;
 	title: string;
 	subtitle?: string;
-	authors: string;
+	authors: string[];
 	pages: number;
 	description: string;
 }

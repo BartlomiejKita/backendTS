@@ -16,12 +16,24 @@ const express_1 = require("express");
 const books_1 = __importDefault(require("../service/books"));
 const booksValidation_1 = __importDefault(require("../middlewares/booksValidation"));
 const BookNotFoundException_1 = __importDefault(require("../exceptions/BookNotFoundException"));
-class BooksController {
+const base_controller_1 = __importDefault(require("../base-classes/base-controller"));
+class BooksController extends base_controller_1.default {
     constructor() {
+        super();
         this.path = "/books";
         this.router = (0, express_1.Router)();
-        this.get = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+        this.initializeRoutes();
+    }
+    initializeRoutes() {
+        this.router.get(this.path, this.get);
+        this.router.get(`${this.path}/:id`, this.getOne);
+        this.router.patch(`${this.path}/:id`, booksValidation_1.default.updateBook, this.patch);
+        this.router.delete(`${this.path}/:id`, this.deleteBook);
+        this.router.post(this.path, booksValidation_1.default.createBook, this.post);
+    }
+    get(req, res, next) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(((_a = req.query) === null || _a === void 0 ? void 0 : _a.page) || 1);
             const limit = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) || 20);
             try {
@@ -36,7 +48,9 @@ class BooksController {
                 next(error);
             }
         });
-        this.getOne = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    }
+    getOne(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield books_1.default.getOneBook(req.params.id);
                 if (book) {
@@ -54,11 +68,13 @@ class BooksController {
                 next(error);
             }
         });
-        this.post = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    }
+    post(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield books_1.default.findBookByTitle(req.body.title);
                 if (book) {
-                    return res.status(409).json({
+                    res.status(409).json({
                         status: "conflict",
                         code: 409,
                         message: "Book with this title already exists",
@@ -76,7 +92,9 @@ class BooksController {
                 next(error);
             }
         });
-        this.deleteBook = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    }
+    deleteBook(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield books_1.default.deleteBook(req.params.id);
                 if (book) {
@@ -94,11 +112,13 @@ class BooksController {
                 next(error);
             }
         });
-        this.patch = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    }
+    patch(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield books_1.default.updateBook(req.params.id, req.body);
                 if (book) {
-                    return res.json({
+                    res.json({
                         status: "success",
                         code: 200,
                         message: "Book has been updated",
@@ -113,14 +133,6 @@ class BooksController {
                 next(error);
             }
         });
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.get(this.path, this.get);
-        this.router.get(`${this.path}/:id`, this.getOne);
-        this.router.patch(`${this.path}/:id`, booksValidation_1.default.updateBook, this.patch);
-        this.router.delete(`${this.path}/:id`, this.deleteBook);
-        this.router.post(this.path, booksValidation_1.default.createBook, this.post);
     }
 }
 exports.default = BooksController;
