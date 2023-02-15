@@ -2,21 +2,15 @@ import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
 
 const schemaCreateBook = Joi.object({
-	isbn: Joi.string().min(10).max(13).required(),
 	title: Joi.string().min(1).max(120).required(),
-	subtitle: Joi.string().min(1).max(120).optional(),
-	authors:  Joi.array().items(Joi.string()).required(),
-	pages: Joi.number().min(1).max(2000).required(),
-	description: Joi.string().min(1).max(500),
+	authors: Joi.string().required(),
+
+	// authors: Joi.array().items(Joi.string()).required(),
 });
 
 const schemaUpdateBook = Joi.object({
-	isbn: Joi.string().min(10).max(13).optional(),
 	title: Joi.string().min(1).max(120).optional(),
-	subtitle: Joi.string().min(1).max(120).optional(),
 	authors: Joi.string().min(1).max(120).optional(),
-	pages: Joi.number().min(1).max(2000).optional(),
-	description: Joi.string().min(1).max(500).optional(),
 });
 
 const validation = (

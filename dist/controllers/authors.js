@@ -80,13 +80,15 @@ class AuthorsController extends base_controller_1.default {
                         message: "Author with this name already exists",
                     });
                 }
-                const newAuthor = yield authors_1.default.createAuthor(req.body);
-                res.json({
-                    status: "success",
-                    code: 201,
-                    message: "New author has been added",
-                    data: newAuthor,
-                });
+                else {
+                    const newAuthor = yield authors_1.default.createAuthor(req.body.name, req.body.books);
+                    res.json({
+                        status: "success",
+                        code: 201,
+                        message: "New author has been added",
+                        data: newAuthor,
+                    });
+                }
             }
             catch (error) {
                 next(error);
@@ -96,8 +98,9 @@ class AuthorsController extends base_controller_1.default {
     deleteAuthor(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const author = yield authors_1.default.deleteAuthor(req.params.id);
+                const author = yield authors_1.default.getOneAuthor(req.params.id);
                 if (author) {
+                    yield authors_1.default.deleteAuthor(req.params.id);
                     res.json({
                         status: "success",
                         code: 200,
@@ -116,13 +119,14 @@ class AuthorsController extends base_controller_1.default {
     patch(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const author = yield authors_1.default.updateAuthor(req.params.id, req.body);
+                const author = yield authors_1.default.getOneAuthor(req.params.id);
                 if (author) {
+                    const newAuthor = yield authors_1.default.updateAuthor(req.params.id, req.body.name, req.body.books);
                     res.json({
                         status: "success",
                         code: 200,
                         message: "Author has been updated",
-                        data: author,
+                        data: newAuthor,
                     });
                 }
                 else {

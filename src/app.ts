@@ -41,13 +41,13 @@ class App {
 			this.app.use("/", controller.router);
 		});
 	}
-
+	
 	private connectToTheDatabase() {
-		mongoose.set("strictQuery", false);
-		mongoose.connect(config.mongo.url, {
-			retryWrites: true,
-			w: "majority",
-		});
+		// mongoose.set("strictQuery", false);
+		// mongoose.connect(config.mongo.url, {
+		// 	retryWrites: true,
+		// 	w: "majority",
+		// });
 	}
 }
 

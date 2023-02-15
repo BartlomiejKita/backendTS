@@ -24,7 +24,7 @@ class BooksController extends BaseController {
 
 	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
-		const limit = parseInt(req.query?.limit || 20);
+		const limit = parseInt(req.query?.limit || 10);
 		try {
 			const books = await service.getAllBooks(page, limit);
 			res.json({
@@ -63,15 +63,18 @@ class BooksController extends BaseController {
 					code: 409,
 					message: "Book with this title already exists",
 				});
+			} else {
+				const newBook = await service.createBook(
+					req.body.title,
+					req.body.authors
+				);
+				res.json({
+					status: "success",
+					code: 201,
+					message: "New book has been added",
+					data: newBook,
+				});
 			}
-
-			const newBook = await service.createBook(req.body);
-			res.json({
-				status: "success",
-				code: 201,
-				message: "New book has been added",
-				data: newBook,
-			});
 		} catch (error) {
 			next(error);
 		}
@@ -79,8 +82,9 @@ class BooksController extends BaseController {
 
 	protected async deleteBook(req: Request, res: Response, next: NextFunction) {
 		try {
-			const book = await service.deleteBook(req.params.id);
+			const book = await service.getOneBook(req.params.id);
 			if (book) {
+				await service.deleteBook(req.params.id);
 				res.json({
 					status: "success",
 					code: 200,
@@ -96,13 +100,18 @@ class BooksController extends BaseController {
 
 	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
-			const book = await service.updateBook(req.params.id, req.body);
+			const book = await service.getOneBook(req.params.id);
 			if (book) {
+				const newBook = await service.updateBook(
+					req.params.id,
+					req.body.title,
+					req.body.authors
+				);
 				res.json({
 					status: "success",
 					code: 200,
 					message: "Book has been updated",
-					data: book,
+					data: newBook,
 				});
 			} else {
 				next(new BookNotFoundException(req.params.id));

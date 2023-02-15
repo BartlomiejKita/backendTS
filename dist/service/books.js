@@ -8,55 +8,66 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const book_1 = require("./schemas/book");
-const { Types: { ObjectId }, } = require("mongoose");
-// import mongoose from "mongoose";
-// const ObjectId = mongoose.Types.ObjectId;
-const findBookByTitle = (title) => __awaiter(void 0, void 0, void 0, function* () { return yield book_1.Book.findOne({ title }); });
-const getAllBooks = (page, limit) => __awaiter(void 0, void 0, void 0, function* () {
-    return book_1.Book.find({})
-        .lean()
-        .limit(limit * 1)
-        .skip((page - 1) * limit);
-});
-const getOneBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdBookId;
-    try {
-        objectIdBookId = ObjectId(bookId);
-    }
-    catch (error) {
-        return null;
-    }
-    return book_1.Book.findOne({ _id: objectIdBookId }).lean();
-});
-const createBook = (body) => __awaiter(void 0, void 0, void 0, function* () { return yield book_1.Book.create(body); });
-const deleteBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdBookId;
-    try {
-        objectIdBookId = ObjectId(bookId);
-    }
-    catch (error) {
-        return null;
-    }
-    return book_1.Book.deleteOne({ _id: objectIdBookId });
-});
-const updateBook = (bookId, body) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdBookId;
-    try {
-        objectIdBookId = ObjectId(bookId);
-    }
-    catch (error) {
-        return null;
-    }
-    return book_1.Book.findOneAndUpdate({
-        _id: objectIdBookId,
-    }, { $set: body }, {
-        new: true,
-        runValidators: true,
-        strict: "throw",
-    }).populate("authors");
-});
+const mysql2_1 = __importDefault(require("mysql2"));
+const config_1 = require("../config/config");
+const pool = mysql2_1.default
+    .createPool({
+    host: config_1.config.mysql.host,
+    user: config_1.config.mysql.user,
+    password: config_1.config.mysql.password,
+    database: config_1.config.mysql.database,
+})
+    .promise();
+function getAllBooks(page, limit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const offset = (page - 1) * limit;
+        const [result] = yield pool.query(`SELECT * FROM books LIMIT ${limit} OFFSET ${offset}`);
+        return result;
+    });
+}
+function findBookByTitle(title) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`SELECT * FROM books WHERE title = ?`, [
+            title,
+        ]);
+        if (result.length !== 0) {
+            return result;
+        }
+    });
+}
+function getOneBook(bookId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`SELECT * FROM books WHERE id = ?`, [
+            bookId,
+        ]);
+        if (result.length !== 0) {
+            return result;
+        }
+    });
+}
+function createBook(title, authors) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`INSERT INTO books (title, authors) VALUES (?,?)`, [title, authors]);
+        const id = result.insertId;
+        return getOneBook(id);
+    });
+}
+function deleteBook(bookId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`DELETE FROM books WHERE id = ?`, [bookId]);
+        return result;
+    });
+}
+function updateBook(bookId, title, authors) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`UPDATE books SET title = ?, authors = ? WHERE id = ?`, [title, authors, bookId]);
+        return getOneBook(bookId);
+    });
+}
 exports.default = {
     findBookByTitle,
     getAllBooks,

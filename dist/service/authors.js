@@ -8,53 +8,68 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const author_1 = require("./schemas/author");
-const { Types: { ObjectId }, } = require("mongoose");
-const findAuthorByName = (name) => __awaiter(void 0, void 0, void 0, function* () { return yield author_1.Author.findOne({ name }); });
-const getAllAuthors = (page, limit) => __awaiter(void 0, void 0, void 0, function* () {
-    return author_1.Author.find({})
-        .lean()
-        .limit(limit * 1)
-        .skip((page - 1) * limit);
-});
-const getOneAuthor = (authorId) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdAuthorId;
-    try {
-        objectIdAuthorId = ObjectId(authorId);
-    }
-    catch (error) {
-        return null;
-    }
-    return author_1.Author.findOne({ _id: objectIdAuthorId }).lean();
-});
-const createAuthor = (body) => __awaiter(void 0, void 0, void 0, function* () { return author_1.Author.create(body); });
-const deleteAuthor = (authorId) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdAuthorId;
-    try {
-        objectIdAuthorId = ObjectId(authorId);
-    }
-    catch (error) {
-        return null;
-    }
-    return author_1.Author.deleteOne({ _id: objectIdAuthorId });
-});
-const updateAuthor = (authorId, body) => __awaiter(void 0, void 0, void 0, function* () {
-    let objectIdAuthorId;
-    try {
-        objectIdAuthorId = ObjectId(authorId);
-    }
-    catch (error) {
-        return null;
-    }
-    return author_1.Author.findOneAndUpdate({
-        _id: objectIdAuthorId,
-    }, { $set: body }, {
-        new: true,
-        runValidators: true,
-        strict: "throw",
+const mysql2_1 = __importDefault(require("mysql2"));
+const config_1 = require("../config/config");
+const pool = mysql2_1.default
+    .createPool({
+    host: config_1.config.mysql.host,
+    user: config_1.config.mysql.user,
+    password: config_1.config.mysql.password,
+    database: config_1.config.mysql.database,
+})
+    .promise();
+function getAllAuthors(page, limit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const offset = (page - 1) * limit;
+        const [result] = yield pool.query(`SELECT * FROM authors LIMIT ${limit} OFFSET ${offset}`);
+        return result;
     });
-});
+}
+function findAuthorByName(name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`SELECT * FROM authors WHERE name = ?`, [
+            name,
+        ]);
+        if (result.length !== 0) {
+            return result;
+        }
+    });
+}
+function getOneAuthor(authorId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`SELECT * FROM authors WHERE id = ?`, [
+            authorId,
+        ]);
+        if (result.length !== 0) {
+            return result;
+        }
+    });
+}
+function createAuthor(name, books) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`INSERT INTO authors (name, books) VALUES (?,?)`, [name, books]);
+        const id = result.insertId;
+        return getOneAuthor(id);
+    });
+}
+function deleteAuthor(authorId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`DELETE FROM authors WHERE id = ?`, [
+            authorId,
+        ]);
+        return result;
+    });
+}
+function updateAuthor(authorId, name, books) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const [result] = yield pool.query(`UPDATE authors SET name = ?, books = ? WHERE id = ?`, [name, books, authorId]);
+        return getOneAuthor(authorId);
+    });
+}
 exports.default = {
     findAuthorByName,
     getAllAuthors,

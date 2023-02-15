@@ -63,15 +63,18 @@ class AuthorsController extends BaseController {
 					code: 409,
 					message: "Author with this name already exists",
 				});
+			} else {
+				const newAuthor = await service.createAuthor(
+					req.body.name,
+					req.body.books
+				);
+				res.json({
+					status: "success",
+					code: 201,
+					message: "New author has been added",
+					data: newAuthor,
+				});
 			}
-
-			const newAuthor = await service.createAuthor(req.body);
-			res.json({
-				status: "success",
-				code: 201,
-				message: "New author has been added",
-				data: newAuthor,
-			});
 		} catch (error) {
 			next(error);
 		}
@@ -83,8 +86,9 @@ class AuthorsController extends BaseController {
 		next: NextFunction
 	) {
 		try {
-			const author = await service.deleteAuthor(req.params.id);
+			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
+				await service.deleteAuthor(req.params.id);
 				res.json({
 					status: "success",
 					code: 200,
@@ -100,13 +104,18 @@ class AuthorsController extends BaseController {
 
 	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
-			const author = await service.updateAuthor(req.params.id, req.body);
+			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
+				const newAuthor = await service.updateAuthor(
+					req.params.id,
+					req.body.name,
+					req.body.books
+				);
 				res.json({
 					status: "success",
 					code: 200,
 					message: "Author has been updated",
-					data: author,
+					data: newAuthor,
 				});
 			} else {
 				next(new AuthorNotFoundException(req.params.id));

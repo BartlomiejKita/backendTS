@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config/config");
 const morgan_1 = __importDefault(require("morgan"));
 const error_1 = __importDefault(require("./middlewares/error"));
@@ -38,11 +37,11 @@ class App {
         });
     }
     connectToTheDatabase() {
-        mongoose_1.default.set("strictQuery", false);
-        mongoose_1.default.connect(config_1.config.mongo.url, {
-            retryWrites: true,
-            w: "majority",
-        });
+        // mongoose.set("strictQuery", false);
+        // mongoose.connect(config.mongo.url, {
+        // 	retryWrites: true,
+        // 	w: "majority",
+        // });
     }
 }
 exports.default = App;

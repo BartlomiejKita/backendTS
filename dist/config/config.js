@@ -26,13 +26,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const MONGO_USERNAME = process.env.MONGO_USERNAME || "";
-const MONGO_PASSWORD = process.env.MONGO_PASSWORD || "";
-const URI = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@cluster0.zp20f30.mongodb.net/db-contacts`;
 const PORT = process.env.PORT ? Number(process.env.PORT) : 9000;
+const MYSQL_HOST = process.env.MYSQL_HOST || "";
+const MYSQL_USER = process.env.MYSQL_USER || "";
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || "";
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE || "";
 exports.config = {
-    mongo: {
-        url: URI,
+    mysql: {
+        host: MYSQL_HOST,
+        user: MYSQL_USER,
+        password: MYSQL_PASSWORD,
+        database: MYSQL_DATABASE,
     },
     server: {
         port: PORT,

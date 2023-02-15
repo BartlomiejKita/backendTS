@@ -35,7 +35,7 @@ class BooksController extends base_controller_1.default {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(((_a = req.query) === null || _a === void 0 ? void 0 : _a.page) || 1);
-            const limit = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) || 20);
+            const limit = parseInt(((_b = req.query) === null || _b === void 0 ? void 0 : _b.limit) || 10);
             try {
                 const books = yield books_1.default.getAllBooks(page, limit);
                 res.json({
@@ -80,13 +80,15 @@ class BooksController extends base_controller_1.default {
                         message: "Book with this title already exists",
                     });
                 }
-                const newBook = yield books_1.default.createBook(req.body);
-                res.json({
-                    status: "success",
-                    code: 201,
-                    message: "New book has been added",
-                    data: newBook,
-                });
+                else {
+                    const newBook = yield books_1.default.createBook(req.body.title, req.body.authors);
+                    res.json({
+                        status: "success",
+                        code: 201,
+                        message: "New book has been added",
+                        data: newBook,
+                    });
+                }
             }
             catch (error) {
                 next(error);
@@ -96,8 +98,9 @@ class BooksController extends base_controller_1.default {
     deleteBook(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield books_1.default.deleteBook(req.params.id);
+                const book = yield books_1.default.getOneBook(req.params.id);
                 if (book) {
+                    yield books_1.default.deleteBook(req.params.id);
                     res.json({
                         status: "success",
                         code: 200,
@@ -116,13 +119,14 @@ class BooksController extends base_controller_1.default {
     patch(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield books_1.default.updateBook(req.params.id, req.body);
+                const book = yield books_1.default.getOneBook(req.params.id);
                 if (book) {
+                    const newBook = yield books_1.default.updateBook(req.params.id, req.body.title, req.body.authors);
                     res.json({
                         status: "success",
                         code: 200,
                         message: "Book has been updated",
-                        data: book,
+                        data: newBook,
                     });
                 }
                 else {
