@@ -19,7 +19,7 @@ async function getAllAuthors(page: number, limit: number) {
 }
 
 async function findAuthorByName(name: string) {
-	const [result] = await pool.query(`SELECT * FROM authors WHERE name = ?`, [
+	const [result] = await pool.query(`SELECT * FROM authors WHERE author_name = ?`, [
 		name,
 	]);
 	if (result.length !== 0) {
@@ -28,7 +28,7 @@ async function findAuthorByName(name: string) {
 }
 
 async function getOneAuthor(authorId: string) {
-	const [result] = await pool.query(`SELECT * FROM authors WHERE id = ?`, [
+	const [result] = await pool.query(`SELECT * FROM authors WHERE author_id = ?`, [
 		authorId,
 	]);
 	if (result.length !== 0) {
@@ -37,7 +37,7 @@ async function getOneAuthor(authorId: string) {
 }
 async function createAuthor(name: string, books: string) {
 	const [result] = await pool.query(
-		`INSERT INTO authors (name, books) VALUES (?,?)`,
+		`INSERT INTO authors (author_name, books) VALUES (?,?)`,
 		[name, books]
 	);
 	const id = result.insertId;
@@ -45,7 +45,7 @@ async function createAuthor(name: string, books: string) {
 }
 
 async function deleteAuthor(authorId: string) {
-	const [result] = await pool.query(`DELETE FROM authors WHERE id = ?`, [
+	const [result] = await pool.query(`DELETE FROM authors WHERE author_id = ?`, [
 		authorId,
 	]);
 	return result;
@@ -53,7 +53,7 @@ async function deleteAuthor(authorId: string) {
 
 async function updateAuthor(authorId: string, name: string, books: string) {
 	const [result] = await pool.query(
-		`UPDATE authors SET name = FNULL(?, name), books = FNULL(?, books WHERE id = ?`,
+		`UPDATE authors SET author_name = IFNULL(?, author_name), books = IFNULL(?, books) WHERE author_id = ?`,
 		[name, books, authorId]
 	);
 	return getOneAuthor(authorId);

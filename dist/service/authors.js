@@ -31,7 +31,7 @@ function getAllAuthors(page, limit) {
 }
 function findAuthorByName(name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`SELECT * FROM authors WHERE name = ?`, [
+        const [result] = yield pool.query(`SELECT * FROM authors WHERE author_name = ?`, [
             name,
         ]);
         if (result.length !== 0) {
@@ -41,7 +41,7 @@ function findAuthorByName(name) {
 }
 function getOneAuthor(authorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`SELECT * FROM authors WHERE id = ?`, [
+        const [result] = yield pool.query(`SELECT * FROM authors WHERE author_id = ?`, [
             authorId,
         ]);
         if (result.length !== 0) {
@@ -51,14 +51,14 @@ function getOneAuthor(authorId) {
 }
 function createAuthor(name, books) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`INSERT INTO authors (name, books) VALUES (?,?)`, [name, books]);
+        const [result] = yield pool.query(`INSERT INTO authors (author_name, books) VALUES (?,?)`, [name, books]);
         const id = result.insertId;
         return getOneAuthor(id);
     });
 }
 function deleteAuthor(authorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`DELETE FROM authors WHERE id = ?`, [
+        const [result] = yield pool.query(`DELETE FROM authors WHERE author_id = ?`, [
             authorId,
         ]);
         return result;
@@ -66,7 +66,7 @@ function deleteAuthor(authorId) {
 }
 function updateAuthor(authorId, name, books) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`UPDATE authors SET name = FNULL(?, name), books = FNULL(?, books WHERE id = ?`, [name, books, authorId]);
+        const [result] = yield pool.query(`UPDATE authors SET author_name = IFNULL(?, author_name), books = IFNULL(?, books) WHERE author_id = ?`, [name, books, authorId]);
         return getOneAuthor(authorId);
     });
 }

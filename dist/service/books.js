@@ -19,7 +19,7 @@ function getAllBooks(page, limit) {
 }
 function findBookByTitle(title) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`SELECT * FROM books WHERE title = ?`, [title]);
+        const [result] = yield server_1.app.connection.query(`SELECT * FROM books WHERE book_title = ?`, [title]);
         if (result.length !== 0) {
             return result;
         }
@@ -27,7 +27,7 @@ function findBookByTitle(title) {
 }
 function getOneBook(bookId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`SELECT * FROM books WHERE id = ?`, [bookId]);
+        const [result] = yield server_1.app.connection.query(`SELECT * FROM books WHERE book_id = ?`, [bookId]);
         if (result.length !== 0) {
             return result;
         }
@@ -35,20 +35,20 @@ function getOneBook(bookId) {
 }
 function createBook(title, authors, pages) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`INSERT INTO books (title, authors, pages) VALUES (?,?,?)`, [title, authors, pages]);
+        const [result] = yield server_1.app.connection.query(`INSERT INTO books (book_title, authors, pages) VALUES (?,?,?)`, [title, authors, pages]);
         const id = result.insertId;
         return getOneBook(id);
     });
 }
 function deleteBook(bookId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`DELETE FROM books WHERE id = ?`, [bookId]);
+        const [result] = yield server_1.app.connection.query(`DELETE FROM books WHERE book_id = ?`, [bookId]);
         return result;
     });
 }
 function updateBook(bookId, title, authors, pages) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`UPDATE books SET title = IFNULL(?, title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE id = ?`, [title, authors, pages, bookId]);
+        const [result] = yield server_1.app.connection.query(`UPDATE books SET book_title = IFNULL(?, book_title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE book_id = ?`, [title, authors, pages, bookId]);
         return getOneBook(bookId);
     });
 }

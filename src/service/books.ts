@@ -11,7 +11,7 @@ async function getAllBooks(page: number, limit: number) {
 
 async function findBookByTitle(title: string) {
 	const [result] = await app.connection.query(
-		`SELECT * FROM books WHERE title = ?`,
+		`SELECT * FROM books WHERE book_title = ?`,
 		[title]
 	);
 	if (result.length !== 0) {
@@ -21,7 +21,7 @@ async function findBookByTitle(title: string) {
 
 async function getOneBook(bookId: string) {
 	const [result] = await app.connection.query(
-		`SELECT * FROM books WHERE id = ?`,
+		`SELECT * FROM books WHERE book_id = ?`,
 		[bookId]
 	);
 	if (result.length !== 0) {
@@ -31,7 +31,7 @@ async function getOneBook(bookId: string) {
 
 async function createBook(title: string, authors: string, pages: string) {
 	const [result] = await app.connection.query(
-		`INSERT INTO books (title, authors, pages) VALUES (?,?,?)`,
+		`INSERT INTO books (book_title, authors, pages) VALUES (?,?,?)`,
 		[title, authors, pages]
 	);
 	const id = result.insertId;
@@ -40,7 +40,7 @@ async function createBook(title: string, authors: string, pages: string) {
 
 async function deleteBook(bookId: string) {
 	const [result] = await app.connection.query(
-		`DELETE FROM books WHERE id = ?`,
+		`DELETE FROM books WHERE book_id = ?`,
 		[bookId]
 	);
 	return result;
@@ -53,7 +53,7 @@ async function updateBook(
 	pages: string
 ) {
 	const [result] = await app.connection.query(
-		`UPDATE books SET title = IFNULL(?, title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE id = ?`,
+		`UPDATE books SET book_title = IFNULL(?, book_title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE book_id = ?`,
 		[title, authors, pages, bookId]
 	);
 	return getOneBook(bookId);
