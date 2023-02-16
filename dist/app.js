@@ -4,14 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const mysql2_1 = __importDefault(require("mysql2"));
 const config_1 = require("./config/config");
 const morgan_1 = __importDefault(require("morgan"));
 const error_1 = __importDefault(require("./middlewares/error"));
 const WrongRouteException_1 = __importDefault(require("./exceptions/WrongRouteException"));
 class App {
     constructor(controllers) {
+        this.connection = mysql2_1.default.createPool({
+            host: config_1.config.mysql.host,
+            user: config_1.config.mysql.user,
+            password: config_1.config.mysql.password,
+            database: config_1.config.mysql.database,
+        }).promise();
         this.app = (0, express_1.default)();
-        this.connectToTheDatabase();
         this.initializeMiddlewares();
         this.initializeControllers(controllers);
         this.initializeErrorHandling();
@@ -35,13 +41,6 @@ class App {
         controllers.forEach((controller) => {
             this.app.use("/", controller.router);
         });
-    }
-    connectToTheDatabase() {
-        // mongoose.set("strictQuery", false);
-        // mongoose.connect(config.mongo.url, {
-        // 	retryWrites: true,
-        // 	w: "majority",
-        // });
     }
 }
 exports.default = App;

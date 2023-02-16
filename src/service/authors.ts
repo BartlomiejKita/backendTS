@@ -35,7 +35,6 @@ async function getOneAuthor(authorId: string) {
 		return result;
 	}
 }
-
 async function createAuthor(name: string, books: string) {
 	const [result] = await pool.query(
 		`INSERT INTO authors (name, books) VALUES (?,?)`,
