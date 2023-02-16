@@ -81,7 +81,7 @@ class BooksController extends base_controller_1.default {
                     });
                 }
                 else {
-                    const newBook = yield books_1.default.createBook(req.body.title, req.body.authors);
+                    const newBook = yield books_1.default.createBook(req.body.title, req.body.authors, req.body.pages);
                     res.json({
                         status: "success",
                         code: 201,
@@ -121,7 +121,7 @@ class BooksController extends base_controller_1.default {
             try {
                 const book = yield books_1.default.getOneBook(req.params.id);
                 if (book) {
-                    const newBook = yield books_1.default.updateBook(req.params.id, req.body.title, req.body.authors);
+                    const newBook = yield books_1.default.updateBook(req.params.id, req.body.title, req.body.authors, req.body.pages);
                     res.json({
                         status: "success",
                         code: 200,

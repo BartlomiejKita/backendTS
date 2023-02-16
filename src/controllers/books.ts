@@ -66,7 +66,8 @@ class BooksController extends BaseController {
 			} else {
 				const newBook = await service.createBook(
 					req.body.title,
-					req.body.authors
+					req.body.authors,
+					req.body.pages
 				);
 				res.json({
 					status: "success",
@@ -105,7 +106,8 @@ class BooksController extends BaseController {
 				const newBook = await service.updateBook(
 					req.params.id,
 					req.body.title,
-					req.body.authors
+					req.body.authors,
+					req.body.pages
 				);
 				res.json({
 					status: "success",

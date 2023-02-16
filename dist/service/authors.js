@@ -66,7 +66,7 @@ function deleteAuthor(authorId) {
 }
 function updateAuthor(authorId, name, books) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`UPDATE authors SET name = ?, books = ? WHERE id = ?`, [name, books, authorId]);
+        const [result] = yield pool.query(`UPDATE authors SET name = FNULL(?, name), books = FNULL(?, books WHERE id = ?`, [name, books, authorId]);
         return getOneAuthor(authorId);
     });
 }

@@ -29,10 +29,10 @@ async function getOneBook(bookId: string) {
 	}
 }
 
-async function createBook(title: string, authors: string) {
+async function createBook(title: string, authors: string, pages: string) {
 	const [result] = await app.connection.query(
-		`INSERT INTO books (title, authors) VALUES (?,?)`,
-		[title, authors]
+		`INSERT INTO books (title, authors, pages) VALUES (?,?,?)`,
+		[title, authors, pages]
 	);
 	const id = result.insertId;
 	return getOneBook(id);
@@ -46,10 +46,15 @@ async function deleteBook(bookId: string) {
 	return result;
 }
 
-async function updateBook(bookId: string, title: string, authors: string) {
+async function updateBook(
+	bookId: string,
+	title: string,
+	authors: string,
+	pages: string
+) {
 	const [result] = await app.connection.query(
-		`UPDATE books SET title = ?, authors = ? WHERE id = ?`,
-		[title, authors, bookId]
+		`UPDATE books SET title = IFNULL(?, title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE id = ?`,
+		[title, authors, pages, bookId]
 	);
 	return getOneBook(bookId);
 }

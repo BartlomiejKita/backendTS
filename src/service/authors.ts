@@ -53,7 +53,7 @@ async function deleteAuthor(authorId: string) {
 
 async function updateAuthor(authorId: string, name: string, books: string) {
 	const [result] = await pool.query(
-		`UPDATE authors SET name = ?, books = ? WHERE id = ?`,
+		`UPDATE authors SET name = FNULL(?, name), books = FNULL(?, books WHERE id = ?`,
 		[name, books, authorId]
 	);
 	return getOneAuthor(authorId);

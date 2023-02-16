@@ -7,11 +7,13 @@ const joi_1 = __importDefault(require("joi"));
 const schemaCreateBook = joi_1.default.object({
     title: joi_1.default.string().min(1).max(120).required(),
     authors: joi_1.default.string().required(),
+    pages: joi_1.default.string().required(),
     // authors: Joi.array().items(Joi.string()).required(),
 });
 const schemaUpdateBook = joi_1.default.object({
     title: joi_1.default.string().min(1).max(120).optional(),
     authors: joi_1.default.string().min(1).max(120).optional(),
+    pages: joi_1.default.string().required().optional(),
 });
 const validation = (schema, obj, next, res) => {
     const { error } = schema.validate(obj);
