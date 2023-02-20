@@ -1,5 +1,4 @@
 import { Response, Request, NextFunction, Router } from "express";
-import Controller from "../interfaces/controller.interface";
 import service from "../service/books";
 import validate from "../middlewares/booksValidation";
 import BookNotFoundException from "../exceptions/BookNotFoundException";
@@ -56,7 +55,9 @@ class BooksController extends BaseController {
 
 	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
-			const book = await service.findBookByTitle(req.body.title);
+			const book = await service.findBookByTitle(
+				req.body.book_title,				
+			);
 			if (book) {
 				res.status(409).json({
 					status: "conflict",
@@ -65,8 +66,7 @@ class BooksController extends BaseController {
 				});
 			} else {
 				const newBook = await service.createBook(
-					req.body.title,
-					req.body.authors,
+					req.body.book_title,				
 					req.body.pages
 				);
 				res.json({
@@ -105,8 +105,7 @@ class BooksController extends BaseController {
 			if (book) {
 				const newBook = await service.updateBook(
 					req.params.id,
-					req.body.title,
-					req.body.authors,
+					req.body.book_title,
 					req.body.pages
 				);
 				res.json({

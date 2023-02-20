@@ -33,9 +33,9 @@ function getOneBook(bookId) {
         }
     });
 }
-function createBook(title, authors, pages) {
+function createBook(title, pages) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`INSERT INTO books (book_title, authors, pages) VALUES (?,?,?)`, [title, authors, pages]);
+        const [result] = yield server_1.app.connection.query(`INSERT INTO books (book_title, pages) VALUES (?,?)`, [title, pages]);
         const id = result.insertId;
         return getOneBook(id);
     });
@@ -46,9 +46,9 @@ function deleteBook(bookId) {
         return result;
     });
 }
-function updateBook(bookId, title, authors, pages) {
+function updateBook(bookId, title, pages) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield server_1.app.connection.query(`UPDATE books SET book_title = IFNULL(?, book_title), authors = IFNULL(?, authors), pages = IFNULL(?, pages) WHERE book_id = ?`, [title, authors, pages, bookId]);
+        const [result] = yield server_1.app.connection.query(`UPDATE books SET book_title = IFNULL(?, book_title), pages = IFNULL(?, pages) WHERE book_id = ?`, [title, pages, bookId]);
         return getOneBook(bookId);
     });
 }

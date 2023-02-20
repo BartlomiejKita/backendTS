@@ -72,7 +72,7 @@ class BooksController extends base_controller_1.default {
     post(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield books_1.default.findBookByTitle(req.body.title);
+                const book = yield books_1.default.findBookByTitle(req.body.book_title);
                 if (book) {
                     res.status(409).json({
                         status: "conflict",
@@ -81,7 +81,7 @@ class BooksController extends base_controller_1.default {
                     });
                 }
                 else {
-                    const newBook = yield books_1.default.createBook(req.body.title, req.body.authors, req.body.pages);
+                    const newBook = yield books_1.default.createBook(req.body.book_title, req.body.pages);
                     res.json({
                         status: "success",
                         code: 201,
@@ -121,7 +121,7 @@ class BooksController extends base_controller_1.default {
             try {
                 const book = yield books_1.default.getOneBook(req.params.id);
                 if (book) {
-                    const newBook = yield books_1.default.updateBook(req.params.id, req.body.title, req.body.authors, req.body.pages);
+                    const newBook = yield books_1.default.updateBook(req.params.id, req.body.book_title, req.body.pages);
                     res.json({
                         status: "success",
                         code: 200,

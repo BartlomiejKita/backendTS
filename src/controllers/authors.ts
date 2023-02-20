@@ -1,5 +1,4 @@
 import { Response, Request, NextFunction, Router } from "express";
-import Controller from "../interfaces/controller.interface";
 import service from "../service/authors";
 import validate from "../middlewares/authorsValidation";
 import AuthorNotFoundException from "../exceptions/AuthorNotFoundException";
@@ -64,10 +63,7 @@ class AuthorsController extends BaseController {
 					message: "Author with this name already exists",
 				});
 			} else {
-				const newAuthor = await service.createAuthor(
-					req.body.name,
-					req.body.books
-				);
+				const newAuthor = await service.createAuthor(req.body.name);
 				res.json({
 					status: "success",
 					code: 201,
@@ -108,8 +104,7 @@ class AuthorsController extends BaseController {
 			if (author) {
 				const newAuthor = await service.updateAuthor(
 					req.params.id,
-					req.body.name,
-					req.body.books
+					req.body.name
 				);
 				res.json({
 					status: "success",

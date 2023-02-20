@@ -6,11 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
 const schemaCreateAuthor = joi_1.default.object({
     name: joi_1.default.string().min(1).max(30).required(),
-    books: joi_1.default.string().min(1).max(30).optional(),
 });
 const schemaUpdateAuthor = joi_1.default.object({
     name: joi_1.default.string().min(1).max(30).optional(),
-    books: joi_1.default.string().min(1).max(30).optional(),
 });
 const validation = (schema, obj, next, res) => {
     const { error } = schema.validate(obj);

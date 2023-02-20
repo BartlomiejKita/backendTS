@@ -49,9 +49,9 @@ function getOneAuthor(authorId) {
         }
     });
 }
-function createAuthor(name, books) {
+function createAuthor(name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`INSERT INTO authors (author_name, books) VALUES (?,?)`, [name, books]);
+        const [result] = yield pool.query(`INSERT INTO authors (author_name) VALUES (?)`, [name]);
         const id = result.insertId;
         return getOneAuthor(id);
     });
@@ -64,9 +64,9 @@ function deleteAuthor(authorId) {
         return result;
     });
 }
-function updateAuthor(authorId, name, books) {
+function updateAuthor(authorId, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`UPDATE authors SET author_name = IFNULL(?, author_name), books = IFNULL(?, books) WHERE author_id = ?`, [name, books, authorId]);
+        const [result] = yield pool.query(`UPDATE authors SET author_name = IFNULL(?, author_name) WHERE author_id = ?`, [name, authorId]);
         return getOneAuthor(authorId);
     });
 }

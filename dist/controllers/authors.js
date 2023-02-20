@@ -81,7 +81,7 @@ class AuthorsController extends base_controller_1.default {
                     });
                 }
                 else {
-                    const newAuthor = yield authors_1.default.createAuthor(req.body.name, req.body.books);
+                    const newAuthor = yield authors_1.default.createAuthor(req.body.name);
                     res.json({
                         status: "success",
                         code: 201,
@@ -121,7 +121,7 @@ class AuthorsController extends base_controller_1.default {
             try {
                 const author = yield authors_1.default.getOneAuthor(req.params.id);
                 if (author) {
-                    const newAuthor = yield authors_1.default.updateAuthor(req.params.id, req.body.name, req.body.books);
+                    const newAuthor = yield authors_1.default.updateAuthor(req.params.id, req.body.name);
                     res.json({
                         status: "success",
                         code: 200,

@@ -35,10 +35,10 @@ async function getOneAuthor(authorId: string) {
 		return result;
 	}
 }
-async function createAuthor(name: string, books: string) {
+async function createAuthor(name: string) {
 	const [result] = await pool.query(
-		`INSERT INTO authors (author_name, books) VALUES (?,?)`,
-		[name, books]
+		`INSERT INTO authors (author_name) VALUES (?)`,
+		[name]
 	);
 	const id = result.insertId;
 	return getOneAuthor(id);
@@ -51,10 +51,10 @@ async function deleteAuthor(authorId: string) {
 	return result;
 }
 
-async function updateAuthor(authorId: string, name: string, books: string) {
+async function updateAuthor(authorId: string, name: string) {
 	const [result] = await pool.query(
-		`UPDATE authors SET author_name = IFNULL(?, author_name), books = IFNULL(?, books) WHERE author_id = ?`,
-		[name, books, authorId]
+		`UPDATE authors SET author_name = IFNULL(?, author_name) WHERE author_id = ?`,
+		[name, authorId]
 	);
 	return getOneAuthor(authorId);
 }

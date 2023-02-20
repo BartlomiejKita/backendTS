@@ -2,16 +2,13 @@ import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
 
 const schemaCreateBook = Joi.object({
-	title: Joi.string().min(1).max(120).required(),
-	authors: Joi.string().required(),
+	book_title: Joi.string().min(1).max(120).required(),
 	pages: Joi.string().required(),
-
 	// authors: Joi.array().items(Joi.string()).required(),
 });
 
 const schemaUpdateBook = Joi.object({
-	title: Joi.string().min(1).max(120).optional(),
-	authors: Joi.string().min(1).max(120).optional(),
+	book_title: Joi.string().min(1).max(120).optional(),
 	pages: Joi.string().required().optional(),
 });
 
