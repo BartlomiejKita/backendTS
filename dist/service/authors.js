@@ -8,32 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mysql2_1 = __importDefault(require("mysql2"));
-const config_1 = require("../config/config");
-const pool = mysql2_1.default
-    .createPool({
-    host: config_1.config.mysql.host,
-    user: config_1.config.mysql.user,
-    password: config_1.config.mysql.password,
-    database: config_1.config.mysql.database,
-})
-    .promise();
+const server_1 = require("../server");
 function getAllAuthors(page, limit) {
     return __awaiter(this, void 0, void 0, function* () {
         const offset = (page - 1) * limit;
-        const [result] = yield pool.query(`SELECT * FROM authors LIMIT ${limit} OFFSET ${offset}`);
+        const [result] = yield server_1.app.connection.query(`SELECT * FROM authors LIMIT ${limit} OFFSET ${offset}`);
         return result;
     });
 }
 function findAuthorByName(name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`SELECT * FROM authors WHERE author_name = ?`, [
-            name,
-        ]);
+        const [result] = yield server_1.app.connection.query(`SELECT * FROM authors WHERE author_name = ?`, [name]);
         if (result.length !== 0) {
             return result;
         }
@@ -41,9 +27,7 @@ function findAuthorByName(name) {
 }
 function getOneAuthor(authorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`SELECT * FROM authors WHERE author_id = ?`, [
-            authorId,
-        ]);
+        const [result] = yield server_1.app.connection.query(`SELECT * FROM authors WHERE author_id = ?`, [authorId]);
         if (result.length !== 0) {
             return result;
         }
@@ -51,22 +35,20 @@ function getOneAuthor(authorId) {
 }
 function createAuthor(name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`INSERT INTO authors (author_name) VALUES (?)`, [name]);
+        const [result] = yield server_1.app.connection.query(`INSERT INTO authors (author_name) VALUES (?)`, [name]);
         const id = result.insertId;
         return getOneAuthor(id);
     });
 }
 function deleteAuthor(authorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`DELETE FROM authors WHERE author_id = ?`, [
-            authorId,
-        ]);
+        const [result] = yield server_1.app.connection.query(`DELETE FROM authors WHERE author_id = ?`, [authorId]);
         return result;
     });
 }
 function updateAuthor(authorId, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const [result] = yield pool.query(`UPDATE authors SET author_name = IFNULL(?, author_name) WHERE author_id = ?`, [name, authorId]);
+        const [result] = yield server_1.app.connection.query(`UPDATE authors SET author_name = IFNULL(?, author_name) WHERE author_id = ?`, [name, authorId]);
         return getOneAuthor(authorId);
     });
 }

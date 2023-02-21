@@ -8,7 +8,7 @@ import WrongRouteException from "./exceptions/WrongRouteException";
 
 class App {
 	public app: express.Application;
-	public readonly connection: mysql.PoolConnection;
+	public readonly connection: any;
 
 	constructor(controllers: Controller[]) {
 		this.connection = mysql.createPool({
