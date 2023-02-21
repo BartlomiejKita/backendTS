@@ -44,12 +44,15 @@ class AuthorsBooksController extends BaseController {
                 status: "success",
                 code: 201,
                 message: "New relation has been created",
-                data: relation.forEach(
-					relation => {
-						for (let key in relation) {
-							if (key === "author_name") console.log(`${relation[key]}`);
-						}
-					})
+				data: relation
+					
+					
+					// relation.forEach(
+					// relation => {
+					// 	for (let key in relation) {
+					// 		if (key === "author_name") console.log(`${relation[key]}`);
+					// 	}
+					// })
             
                 // data: `${relation}
                 // Book: ${relation[0].book_id} Authors: ${Object.entries(relation).forEach(
