@@ -5,10 +5,11 @@ import morgan from "morgan";
 import errorMiddleware from "./middlewares/error";
 import WrongRouteException from "./exceptions/WrongRouteException";
 import BaseController from "./base-classes/base-controller";
+ import { PromisePoolConnection } from "mysql2/promise";
 
 class App {
 	public app: express.Application;
-	public readonly connection: any;
+	public readonly connection: PromisePoolConnection;
 
 	constructor(controllers: BaseController[]) {
 		this.connection = mysql

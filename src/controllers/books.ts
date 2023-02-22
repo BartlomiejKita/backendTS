@@ -55,9 +55,7 @@ class BooksController extends BaseController {
 
 	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
-			const book = await service.findBookByTitle(
-				req.body.book_title,				
-			);
+			const book = await service.findBookByTitle(req.body.book_title);
 			if (book) {
 				res.status(409).json({
 					status: "conflict",
@@ -66,8 +64,9 @@ class BooksController extends BaseController {
 				});
 			} else {
 				const newBook = await service.createBook(
-					req.body.book_title,				
-					req.body.pages
+					req.body.book_title,
+					req.body.pages,
+					req.body.publish_date
 				);
 				res.json({
 					status: "success",
@@ -106,7 +105,8 @@ class BooksController extends BaseController {
 				const newBook = await service.updateBook(
 					req.params.id,
 					req.body.book_title,
-					req.body.pages
+					req.body.pages,
+					req.body.publish_date
 				);
 				res.json({
 					status: "success",

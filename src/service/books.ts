@@ -14,7 +14,7 @@ async function findBookByTitle(title: string) {
 		`SELECT * FROM books WHERE book_title = ?`,
 		[title]
 	);
-	if (result.length) {
+	if (Array.isArray(result) && result.length) {
 		return result;
 	}
 }
@@ -24,18 +24,21 @@ async function getOneBook(bookId: string) {
 		`SELECT * FROM books WHERE book_id = ?`,
 		[bookId]
 	);
-	if (result.length) {
+	if (Array.isArray(result) && result.length) {
 		return result;
 	}
 }
 
-async function createBook(title: string, pages: string) {
+async function createBook(title: string, pages: string, publish_date: Date) {
 	const [result] = await app.connection.query(
-		`INSERT INTO books (book_title, pages) VALUES (?,?)`,
-		[title, pages]
+		`INSERT INTO books (book_title, pages, publish_date) VALUES (?,?,?)`,
+		[title, pages, publish_date]
 	);
-	const id = result.insertId;
-	return getOneBook(id);
+
+	// HOW TO RETURN DATA OF INSERTED BOOK WITHOUT USING ANY TYPE?
+	// const id = (result as any).insertId;
+	// return getOneBook(id);
+	return result
 }
 
 async function deleteBook(bookId: string) {
@@ -46,10 +49,15 @@ async function deleteBook(bookId: string) {
 	return result;
 }
 
-async function updateBook(bookId: string, title: string, pages: string) {
-	const [result] = await app.connection.query(
-		`UPDATE books SET book_title = IFNULL(?, book_title), pages = IFNULL(?, pages) WHERE book_id = ?`,
-		[title, pages, bookId]
+async function updateBook(
+	bookId: string,
+	title: string,
+	pages: string,
+	publish_date: Date
+) {
+	await app.connection.query(
+		`UPDATE books SET book_title = IFNULL(?, book_title), pages = IFNULL(?, pages), publish_date = IFNULL (?, publish_date) WHERE book_id = ?`,
+		[title, pages, publish_date, bookId]
 	);
 	return getOneBook(bookId);
 }

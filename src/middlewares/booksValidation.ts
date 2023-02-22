@@ -4,11 +4,13 @@ import { Request, Response, NextFunction } from "express";
 const schemaCreateBook = Joi.object({
 	book_title: Joi.string().min(1).max(120).required(),
 	pages: Joi.string().required(),
+	publish_date: Joi.date().required(),
 });
 
 const schemaUpdateBook = Joi.object({
 	book_title: Joi.string().min(1).max(120).optional(),
 	pages: Joi.string().required().optional(),
+	publish_date: Joi.date().optional(),
 });
 
 const validation = (

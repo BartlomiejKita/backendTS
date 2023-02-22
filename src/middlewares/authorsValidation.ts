@@ -3,10 +3,12 @@ import { Request, Response, NextFunction } from "express";
 
 const schemaCreateAuthor = Joi.object({
 	name: Joi.string().min(1).max(30).required(),
+	birth_date: Joi.date().required(),
 });
 
 const schemaUpdateAuthor = Joi.object({
 	name: Joi.string().min(1).max(30).optional(),
+	birth_date: Joi.date().optional(),
 });
 
 const validation = (

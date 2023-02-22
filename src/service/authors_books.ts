@@ -15,7 +15,7 @@ async function getBookWithAuthors(bookId: string) {
 				books ON books.book_id = authors_books.book_id and books.book_id = ?;`,
 		[bookId]
 	);
-	if (result.length) {
+	if (Array.isArray(result) && result.length) {
 		return result;
 	}
 }
