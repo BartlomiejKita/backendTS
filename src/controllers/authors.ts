@@ -76,11 +76,7 @@ class AuthorsController extends BaseController {
 		}
 	}
 
-	protected async deleteAuthor(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	) {
+	protected async deleteAuthor( req: Request,	res: Response, next: NextFunction	) {
 		try {
 			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
