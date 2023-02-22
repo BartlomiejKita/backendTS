@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction, Router } from "express";
 import NotImplementedError from "../exceptions/NotImplemented";
 
-class BaseController{
+abstract class BaseController{
 	public path = "";
 	public router = Router();
 

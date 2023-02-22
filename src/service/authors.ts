@@ -13,7 +13,7 @@ async function findAuthorByName(name: string) {
 		`SELECT * FROM authors WHERE author_name = ?`,
 		[name]
 	);
-	if (result.length !== 0) {
+	if (result.length) {
 		return result;
 	}
 }
@@ -23,7 +23,7 @@ async function getOneAuthor(authorId: string) {
 		`SELECT * FROM authors WHERE author_id = ?`,
 		[authorId]
 	);
-	if (result.length !== 0) {
+	if (result.length) {
 		return result;
 	}
 }

@@ -1,27 +1,28 @@
 import express, { Request, Response, NextFunction } from "express";
-import Controller from "./interfaces/controller.interface";
 import mysql from "mysql2";
 import { config } from "./config/config";
 import morgan from "morgan";
 import errorMiddleware from "./middlewares/error";
 import WrongRouteException from "./exceptions/WrongRouteException";
+import BaseController from "./base-classes/base-controller";
 
 class App {
 	public app: express.Application;
 	public readonly connection: any;
 
-	constructor(controllers: Controller[]) {
-		this.connection = mysql.createPool({
-			host: config.mysql.host,
-			user: config.mysql.user,
-			password: config.mysql.password,
-			database: config.mysql.database,
-		}).promise();
+	constructor(controllers: BaseController[]) {
+		this.connection = mysql
+			.createPool({
+				host: config.mysql.host,
+				user: config.mysql.user,
+				password: config.mysql.password,
+				database: config.mysql.database,
+			})
+			.promise();
 		this.app = express();
 		this.initializeMiddlewares();
 		this.initializeControllers(controllers);
 		this.initializeErrorHandling();
-
 	}
 
 	public listen() {
@@ -42,7 +43,7 @@ class App {
 		this.app.use(errorMiddleware);
 	}
 
-	private initializeControllers(controllers: Controller[]) {
+	private initializeControllers(controllers: BaseController[]) {
 		controllers.forEach((controller) => {
 			this.app.use("/", controller.router);
 		});

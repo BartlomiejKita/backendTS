@@ -4,7 +4,6 @@ import { Request, Response, NextFunction } from "express";
 const schemaCreateBook = Joi.object({
 	book_title: Joi.string().min(1).max(120).required(),
 	pages: Joi.string().required(),
-	// authors: Joi.array().items(Joi.string()).required(),
 });
 
 const schemaUpdateBook = Joi.object({

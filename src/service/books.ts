@@ -14,7 +14,7 @@ async function findBookByTitle(title: string) {
 		`SELECT * FROM books WHERE book_title = ?`,
 		[title]
 	);
-	if (result.length !== 0) {
+	if (result.length) {
 		return result;
 	}
 }
@@ -24,7 +24,7 @@ async function getOneBook(bookId: string) {
 		`SELECT * FROM books WHERE book_id = ?`,
 		[bookId]
 	);
-	if (result.length !== 0) {
+	if (result.length) {
 		return result;
 	}
 }
