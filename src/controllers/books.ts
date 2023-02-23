@@ -24,8 +24,10 @@ class BooksController extends BaseController {
 	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
 		const limit = parseInt(req.query?.limit || 10);
+		const gt = req.query?.gt;
+		const lt = req.query?.lt;
 		try {
-			const books = await service.getAllBooks(page, limit);
+			const books = await service.getAllBooks(page, limit, gt, lt);
 			res.json({
 				status: "success",
 				code: 200,

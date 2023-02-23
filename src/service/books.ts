@@ -1,19 +1,26 @@
 import { app } from "../server";
 
-async function getAllBooks(page: number, limit: number) {
+async function getAllBooks(
+	page: number,
+	limit: number,
+	gt: string,
+	lt: string
+) {
 	const offset = (page - 1) * limit;
 	const [result] = await app.connection.query(
 		`SELECT
 				a.author_id,
 				a.author_name,
 				b.book_id,
-				b.book_title
+				b.book_title,
+				b.publish_date
 		FROM
 				authors as a 
 						RIGHT JOIN 
 				authors_books ON authors_books.author_id = a.author_id
 						RIGHT JOIN
 				books as b ON b.book_id = authors_books.book_id
+				WHERE publish_date >= '${gt}' AND publish_date <= '${lt}'
 				LIMIT ${limit} OFFSET ${offset};`
 	);
 
@@ -36,7 +43,8 @@ async function getOneBook(bookId: string) {
 				a.author_id, 
 				a.author_name,
 				b.book_id,
-				b.book_title
+				b.book_title,
+				b.publish_date
 		 FROM 
 		 		authors as a
 						INNER JOIN
