@@ -3,7 +3,18 @@ import { app } from "../server";
 async function getAllBooks(page: number, limit: number) {
 	const offset = (page - 1) * limit;
 	const [result] = await app.connection.query(
-		`SELECT * FROM books LIMIT ${limit} OFFSET ${offset}`
+		`SELECT
+				a.author_id,
+				a.author_name,
+				b.book_id,
+				b.book_title
+		FROM
+				authors as a 
+						RIGHT JOIN 
+				authors_books ON authors_books.author_id = a.author_id
+						RIGHT JOIN
+				books as b ON b.book_id = authors_books.book_id
+				LIMIT ${limit} OFFSET ${offset};`
 	);
 
 	return result;
@@ -21,7 +32,18 @@ async function findBookByTitle(title: string) {
 
 async function getOneBook(bookId: string) {
 	const [result] = await app.connection.query(
-		`SELECT * FROM books WHERE book_id = ?`,
+		`SELECT 
+				a.author_id, 
+				a.author_name,
+				b.book_id,
+				b.book_title
+		 FROM 
+		 		authors as a
+						INNER JOIN
+				authors_books ON authors_books.book_id = ? and
+				authors_books.author_id = a.author_id
+						INNER JOIN 
+				books as b ON b.book_id = authors_books.book_id;`,
 		[bookId]
 	);
 	if (Array.isArray(result) && result.length) {
@@ -38,7 +60,7 @@ async function createBook(title: string, pages: string, publish_date: Date) {
 	// HOW TO RETURN DATA OF INSERTED BOOK WITHOUT USING ANY TYPE?
 	// const id = (result as any).insertId;
 	// return getOneBook(id);
-	return result
+	return result;
 }
 
 async function deleteBook(bookId: string) {
