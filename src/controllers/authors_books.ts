@@ -1,22 +1,11 @@
 import { Response, Request, NextFunction, Router } from "express";
 import service from "../service/authors_books";
 import BookNotFoundException from "../exceptions/BookNotFoundException";
-import BaseController from "../base-classes/base-controller";
-
-class AuthorsBooksController extends BaseController {
-	public path = "/authors_books";
-	public router = Router();
-
-	constructor() {
-		super();
-		this.initializeRoutes();
-	}
-
-	protected initializeRoutes() {
-		this.router.get(`${this.path}/:id`, this.getOne);
-		this.router.post(this.path, this.post);
-	}
-
+import Controller from "../utils/controller.decorator";
+import { Get, Post, Patch, Delete } from "../utils/handlers.decorator";
+@Controller("/authors_books")
+class AuthorsBooksController {
+	@Get("/:id")
 	protected async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.getBookWithAuthors(req.params.id);
@@ -33,7 +22,7 @@ class AuthorsBooksController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Post("")
 	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
 			const relation = await service.relateAuthorsBooks(

@@ -2,25 +2,11 @@ import { Response, Request, NextFunction, Router } from "express";
 import service from "../service/authors";
 import validate from "../middlewares/authorsValidation";
 import AuthorNotFoundException from "../exceptions/AuthorNotFoundException";
-import BaseController from "../base-classes/base-controller";
-
-class AuthorsController extends BaseController {
-	public path = "/authors";
-	public router = Router();
-
-	constructor() {
-		super();
-		this.initializeRoutes();
-	}
-
-	protected initializeRoutes() {
-		this.router.get(this.path, this.get);
-		this.router.get(`${this.path}/:id`, this.getOne);
-		this.router.patch(`${this.path}/:id`, validate.updateAuthor, this.patch);
-		this.router.delete(`${this.path}/:id`, this.deleteAuthor);
-		this.router.post(this.path, validate.createAuthor, this.post);
-	}
-
+import Controller from "../utils/controller.decorator";
+import { Get, Post, Patch, Delete } from "../utils/handlers.decorator";
+@Controller("/authors")
+class AuthorsController {
+	@Get("")
 	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
 		const limit = parseInt(req.query?.limit || 20);
@@ -35,7 +21,7 @@ class AuthorsController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Get("/:id")
 	protected async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.getOneAuthor(req.params.id);
@@ -52,7 +38,7 @@ class AuthorsController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Post("")
 	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.findAuthorByName(req.body.name);
@@ -78,8 +64,12 @@ class AuthorsController extends BaseController {
 			next(error);
 		}
 	}
-
-	protected async deleteAuthor( req: Request,	res: Response, next: NextFunction	) {
+	@Delete("/:id")
+	protected async deleteAuthor(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
 		try {
 			const author = await service.getOneAuthor(req.params.id);
 			if (author) {
@@ -96,7 +86,7 @@ class AuthorsController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Patch("/:id")
 	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
 			const author = await service.getOneAuthor(req.params.id);

@@ -1,17 +1,20 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, Handler } from "express";
 import mysql from "mysql2";
 import { config } from "./config/config";
 import morgan from "morgan";
 import errorMiddleware from "./middlewares/error";
 import WrongRouteException from "./exceptions/WrongRouteException";
-import BaseController from "./base-classes/base-controller";
- import { PromisePoolConnection } from "mysql2/promise";
+import { PromisePoolConnection } from "mysql2/promise";
+import "reflect-metadata";
+import { MetadataKeys } from "./utils/metadata.keys";
+import { IRouter } from "./utils/handlers.decorator";
+import { controllers } from "./controllers";
 
 class App {
 	public app: express.Application;
 	public readonly connection: PromisePoolConnection;
 
-	constructor(controllers: BaseController[]) {
+	constructor() {
 		this.connection = mysql
 			.createPool({
 				host: config.mysql.host,
@@ -22,7 +25,7 @@ class App {
 			.promise();
 		this.app = express();
 		this.initializeMiddlewares();
-		this.initializeControllers(controllers);
+		this.initializeControllers();
 		this.initializeErrorHandling();
 	}
 
@@ -44,9 +47,30 @@ class App {
 		this.app.use(errorMiddleware);
 	}
 
-	private initializeControllers(controllers: BaseController[]) {
-		controllers.forEach((controller) => {
-			this.app.use("/", controller.router);
+	private initializeControllers() {
+		controllers.forEach((controllerClass) => {
+			const controllerInstance: { [handleName: string]: Handler } =
+				new controllerClass() as any;
+
+			const basePath: string = Reflect.getMetadata(
+				MetadataKeys.BASE_PATH,
+				controllerClass
+			);
+			const routers: IRouter[] = Reflect.getMetadata(
+				MetadataKeys.ROUTERS,
+				controllerClass
+			);
+
+			const exRouter = express.Router();
+
+			routers.forEach(({ method, path, handlerName }) => {
+				exRouter[method](
+					path,
+					controllerInstance[String(handlerName)].bind(controllerInstance)
+				);
+			});
+
+			this.app.use(basePath, exRouter);
 		});
 	}
 }

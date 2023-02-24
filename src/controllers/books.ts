@@ -2,25 +2,13 @@ import { Response, Request, NextFunction, Router } from "express";
 import service from "../service/books";
 import validate from "../middlewares/booksValidation";
 import BookNotFoundException from "../exceptions/BookNotFoundException";
-import BaseController from "../base-classes/base-controller";
 
-class BooksController extends BaseController {
-	public path = "/books";
-	public router = Router();
+import Controller from "../utils/controller.decorator";
+import { Get, Post, Patch, Delete } from "../utils/handlers.decorator";
 
-	constructor() {
-		super();
-		this.initializeRoutes();
-	}
-
-	protected initializeRoutes() {
-		this.router.get(this.path, this.get);
-		this.router.get(`${this.path}/:id`, this.getOne);
-		this.router.patch(`${this.path}/:id`, validate.updateBook, this.patch);
-		this.router.delete(`${this.path}/:id`, this.deleteBook);
-		this.router.post(this.path, validate.createBook, this.post);
-	}
-
+@Controller("/books")
+class BooksController {
+	@Get("")
 	protected async get(req: any, res: Response, next: NextFunction) {
 		const page = parseInt(req.query?.page || 1);
 		const limit = parseInt(req.query?.limit || 10);
@@ -37,7 +25,7 @@ class BooksController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Get("/:id")
 	protected async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.getOneBook(req.params.id);
@@ -54,7 +42,7 @@ class BooksController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Post("")
 	protected async post(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.findBookByTitle(req.body.book_title);
@@ -81,7 +69,7 @@ class BooksController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Delete("/:id")
 	protected async deleteBook(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.getOneBook(req.params.id);
@@ -99,7 +87,7 @@ class BooksController extends BaseController {
 			next(error);
 		}
 	}
-
+	@Patch("/:id")
 	protected async patch(req: Request, res: Response, next: NextFunction) {
 		try {
 			const book = await service.getOneBook(req.params.id);
